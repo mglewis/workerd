@@ -84,6 +84,56 @@ type ImageOutputOptions = {
   background?: string;
 };
 
+/**
+ * Metadata for a hosted image
+ */
+interface ImageMetadata {
+  id: string;
+  filename?: string;
+  uploaded?: string;
+  requireSignedURLs: boolean;
+  meta?: Record<string, unknown>;
+  variants: string[];
+  draft?: boolean;
+  creator?: string;
+}
+
+/**
+ * Options for uploading an image
+ */
+interface ImageUploadOptions {
+  id?: string;
+  filename?: string;
+  requireSignedURLs?: boolean;
+  metadata?: Record<string, unknown>;
+}
+
+/**
+ * Options for updating image metadata
+ */
+interface ImageUpdateOptions {
+  requireSignedURLs?: boolean;
+  metadata?: Record<string, unknown>;
+}
+
+/**
+ * Options for listing images
+ */
+interface ImageListOptions {
+  limit?: number;
+  cursor?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+/**
+ * Result of listing images
+ */
+interface ImageList {
+  images: ImageMetadata[];
+  cursor?: string;
+  listComplete: boolean;
+}
+
 interface ImagesBinding {
   /**
    * Get image metadata (type, width and height)
@@ -91,12 +141,63 @@ interface ImagesBinding {
    * @param stream The image bytes
    */
   info(stream: ReadableStream<Uint8Array>): Promise<ImageInfoResponse>;
+
   /**
    * Begin applying a series of transformations to an image
    * @param stream The image bytes
    * @returns A transform handle
    */
   input(stream: ReadableStream<Uint8Array>): ImageTransformer;
+
+  /**
+   * Get metadata for a hosted image
+   * @param imageId The ID of the image (UUID or custom ID)
+   * @returns Image metadata, or null if not found
+   */
+  get(imageId: string): Promise<ImageMetadata | null>;
+
+  /**
+   * Get the raw image data for a hosted image
+   * @param imageId The ID of the image (UUID or custom ID)
+   * @returns ReadableStream of image bytes, or null if not found
+   */
+  getImage(imageId: string): Promise<ReadableStream<Uint8Array> | null>;
+
+  /**
+   * Upload a new hosted image
+   * @param image The image file to upload
+   * @param options Upload configuration
+   * @returns Metadata for the uploaded image
+   * @throws {@link ImagesError} if upload fails
+   */
+  upload(
+    image: ReadableStream<Uint8Array> | ArrayBuffer,
+    options?: ImageUploadOptions
+  ): Promise<ImageMetadata>;
+
+  /**
+   * Update hosted image metadata
+   * @param imageId The ID of the image
+   * @param options Properties to update
+   * @returns Updated image metadata
+   * @throws {@link ImagesError} if update fails
+   */
+  update(imageId: string, options: ImageUpdateOptions): Promise<ImageMetadata>;
+
+  /**
+   * Delete a hosted image
+   * @param imageId The ID of the image
+   * @returns True if deleted, false if not found
+   */
+  delete(imageId: string): Promise<boolean>;
+
+  /**
+   * List hosted images with pagination
+   * @param options List configuration
+   * @returns List of images with pagination info
+   * @throws {@link ImagesError} if list fails
+   */
+  list(options?: ImageListOptions): Promise<ImageList>;
 }
 
 interface ImageTransformer {

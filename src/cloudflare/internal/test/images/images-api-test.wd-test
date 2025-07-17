@@ -13,10 +13,15 @@ const unitTests :Workerd.Config = (
           ( name = "images",
             wrapped = (
               moduleName = "cloudflare-internal:images-api",
-              innerBindings = [(
-                name = "fetcher",
-                service = "images-upstream-mock"
-              )],
+              innerBindings = [
+                (
+                  name = "fetcher",
+                  service = (
+                    name = "images-edge-api-mock",
+                    entrypoint = "ServiceEntrypoint"
+                  )
+                )
+              ],
             )
           )
         ],
@@ -28,6 +33,14 @@ const unitTests :Workerd.Config = (
         modules = [
           ( name = "worker", esModule = embed "images-upstream-mock.js" )
         ],
+      )
+    ),
+    ( name = "images-edge-api-mock",
+      worker = (
+        compatibilityDate = "2025-05-01",
+        modules = [
+          ( name = "worker", esModule = embed "images-edge-api-mock.js" )
+        ]
       )
     )
   ]

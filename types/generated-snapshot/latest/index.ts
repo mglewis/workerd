@@ -7375,6 +7375,8 @@ export interface Hyperdrive {
 // Copyright (c) 2024 Cloudflare, Inc.
 // Licensed under the Apache 2.0 license found in the LICENSE file or at:
 //     https://opensource.org/licenses/Apache-2.0
+// TODO: this file will need to be updated to match
+// src/cloudflare/internal/images.d.ts once the structure has been finalised
 export type ImageInfoResponse =
   | {
       format: "image/svg+xml";
@@ -7473,6 +7475,13 @@ export interface ImagesBinding {
    * @returns A transform handle
    */
   input(stream: ReadableStream<Uint8Array>): ImageTransformer;
+  /**
+   * Begin applying a series of transformations to an image stored in Cloudflare Images
+   * @throws {@link ImagesError} if imageId is invalid or inaccessible
+   * @param imageId The Id of an image hosted on Cloudflare Images
+   * @returns A transform handle
+   */
+  hosted(imageId: string): Promise<ImageTransformer>;
 }
 export interface ImageTransformer {
   /**

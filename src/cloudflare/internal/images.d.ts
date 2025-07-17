@@ -97,6 +97,14 @@ interface ImagesBinding {
    * @returns A transform handle
    */
   input(stream: ReadableStream<Uint8Array>): ImageTransformer;
+
+  /**
+   * Begin applying a series of transformations to an image stored in Cloudflare Images
+   * @throws {@link ImagesError} if imageId is invalid or inaccessible
+   * @param imageId The Id of an image hosted on Cloudflare Images
+   * @returns A transform handle
+   */
+  hosted(imageId: string): Promise<ImageTransformer>;
 }
 
 interface ImageTransformer {

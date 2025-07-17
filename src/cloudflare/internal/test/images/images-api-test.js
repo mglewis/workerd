@@ -257,3 +257,72 @@ export const test_images_transform_consumed = {
     );
   },
 };
+
+export const test_images_hosted_success = {
+  /**
+   * @param {unknown} _
+   * @param {Env} env
+   */
+  async test(_, env) {
+    const transformer = await env.images.hosted('test-image-id');
+    const result = await transformer
+      .transform({ rotate: 90 })
+      .output({ format: 'image/avif' });
+
+    // Would be image/avif in real life, but mock always returns JSON
+    assert.equal(result.contentType(), 'application/json');
+    const body = await result.response().json();
+
+    assert.deepStrictEqual(body, {
+      image: 'MOCK_IMAGE_DATA_test-image-id',
+      output_format: 'image/avif',
+      transforms: [{ imageIndex: 0, rotate: 90 }],
+    });
+  },
+};
+
+export const test_images_hosted_not_found = {
+  /**
+   * @param {unknown} _
+   * @param {Env} env
+   */
+  async test(_, env) {
+    /**
+     * @type {any} e;
+     */
+    let e;
+
+    try {
+      await env.images.hosted('not-found');
+    } catch (e2) {
+      e = e2;
+    }
+
+    assert.equal(true, !!e);
+    assert.equal(e.code, 9523);
+    assert.equal(e.message, 'Unexpected error response 404: Image not found');
+  },
+};
+
+export const test_images_hosted_bad_request = {
+  /**
+   * @param {unknown} _
+   * @param {Env} env
+   */
+  async test(_, env) {
+    /**
+     * @type {any} e;
+     */
+    let e;
+
+    try {
+      await env.images.hosted('bad-request');
+    } catch (e2) {
+      e = e2;
+    }
+
+    assert.equal(true, !!e);
+    assert.equal(e.code, 9523);
+    assert.equal(e.message, 'Unexpected error response 400: Bad request');
+  },
+};

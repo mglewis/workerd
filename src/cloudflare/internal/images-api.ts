@@ -200,7 +200,10 @@ function isDrawTransformer(input: unknown): input is DrawTransformer {
 }
 
 class ImagesBindingImpl implements ImagesBinding {
-  constructor(private readonly fetcher: Fetcher) {}
+  constructor(
+    private readonly fetcher: Fetcher,
+    private readonly edgeApiFetcher: Fetcher
+  ) {}
 
   async info(stream: ReadableStream<Uint8Array>): Promise<ImageInfoResponse> {
     const body = new StreamableFormData();
@@ -235,6 +238,28 @@ class ImagesBindingImpl implements ImagesBinding {
 
   input(stream: ReadableStream<Uint8Array>): ImageTransformer {
     return new ImageTransformerImpl(this.fetcher, stream);
+  }
+
+  async hosted(imageId: string): Promise<ImageTransformer> {
+    // TODO: update placeholder url to point correctly at edge api
+    const response = await this.edgeApiFetcher.fetch(
+      `https://api-internal.imagedelivery.net/images/${imageId}`,
+      {
+        method: 'GET',
+        headers: {},
+      }
+    );
+
+    await throwErrorIfErrorResponse('HOSTED', response);
+
+    if (response.body === null) {
+      throw new ImagesErrorImpl(
+        'IMAGES_HOSTED_ERROR 9524: Image data unavailable',
+        9524
+      );
+    }
+
+    return new ImageTransformerImpl(this.fetcher, response.body);
   }
 }
 
@@ -272,8 +297,11 @@ async function throwErrorIfErrorResponse(
   }
 }
 
-export default function makeBinding(env: { fetcher: Fetcher }): ImagesBinding {
-  return new ImagesBindingImpl(env.fetcher);
+export default function makeBinding(env: {
+  fetcher: Fetcher;
+  edgeApiFetcher: Fetcher;
+}): ImagesBinding {
+  return new ImagesBindingImpl(env.fetcher, env.edgeApiFetcher);
 }
 
 function chainStreams<T>(streams: ReadableStream<T>[]): ReadableStream<T> {

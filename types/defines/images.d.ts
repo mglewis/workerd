@@ -2,6 +2,9 @@
 // Licensed under the Apache 2.0 license found in the LICENSE file or at:
 //     https://opensource.org/licenses/Apache-2.0
 
+// TODO: this file will need to be updated to match
+// src/cloudflare/internal/images.d.ts once the structure has been finalised
+
 type ImageInfoResponse =
   | { format: 'image/svg+xml' }
   | {

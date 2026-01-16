@@ -463,6 +463,7 @@ export const test_images_get_success = {
     assert.equal(metadata.id, 'test-image-id');
     assert.equal(metadata.filename, 'test.jpg');
     assert.equal(metadata.requireSignedURLs, false);
+    assert.equal(metadata.creator, 'test-creator');
   },
 };
 
@@ -523,12 +524,14 @@ export const test_images_upload_with_options = {
       filename: 'upload-test.jpg',
       requireSignedURLs: true,
       metadata: { key: 'value' },
+      creator: 'upload-creator',
     });
 
     assert.equal(metadata.id, 'custom-id');
     assert.equal(metadata.filename, 'upload-test.jpg');
     assert.equal(metadata.requireSignedURLs, true);
     assert.deepStrictEqual(metadata.meta, { key: 'value' });
+    assert.equal(metadata.creator, 'upload-creator');
   },
 };
 
@@ -556,11 +559,13 @@ export const test_images_update_success = {
     const metadata = await env.images.update('test-image-id', {
       requireSignedURLs: true,
       metadata: { updated: true },
+      creator: 'update-creator',
     });
 
     assert.equal(metadata.id, 'test-image-id');
     assert.equal(metadata.requireSignedURLs, true);
     assert.deepStrictEqual(metadata.meta, { updated: true });
+    assert.equal(metadata.creator, 'update-creator');
   },
 };
 

@@ -38,6 +38,7 @@ export class ServiceEntrypoint extends WorkerEntrypoint {
       variants: ['public'],
       meta: {},
       draft: false,
+      creator: 'test-creator',
     };
   }
 
@@ -72,6 +73,7 @@ export class ServiceEntrypoint extends WorkerEntrypoint {
       variants: ['public'],
       meta: options?.metadata || {},
       draft: false,
+      creator: options?.creator,
     };
   }
 
@@ -94,6 +96,7 @@ export class ServiceEntrypoint extends WorkerEntrypoint {
       variants: ['public'],
       meta: body.metadata || {},
       draft: false,
+      creator: body.creator,
     };
   }
 
@@ -118,6 +121,7 @@ export class ServiceEntrypoint extends WorkerEntrypoint {
         requireSignedURLs: false,
         variants: ['public'],
         meta: {},
+        creator: 'test-creator',
       },
       {
         id: 'image-2',
@@ -126,6 +130,7 @@ export class ServiceEntrypoint extends WorkerEntrypoint {
         requireSignedURLs: false,
         variants: ['public'],
         meta: {},
+        creator: 'test-creator',
       },
     ];
 

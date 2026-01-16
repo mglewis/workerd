@@ -329,11 +329,11 @@ class ImagesBindingImpl implements ImagesBinding {
   }
 
   async get(imageId: string): Promise<ImageMetadata | null> {
-    return await this.#fetcher.get(imageId);
+    return this.#fetcher.get(imageId);
   }
 
   async getImage(imageId: string): Promise<ReadableStream<Uint8Array> | null> {
-    return await this.#fetcher.getImage(imageId);
+    return this.#fetcher.getImage(imageId);
   }
 
   async upload(
@@ -356,22 +356,22 @@ class ImagesBindingImpl implements ImagesBinding {
       processedImage = stream.pipeThrough(createBase64DecoderTransformStream());
     }
 
-    return await this.#fetcher.upload(processedImage, options);
+    return this.#fetcher.upload(processedImage, options);
   }
 
   async update(
     imageId: string,
     options: ImageUpdateOptions
   ): Promise<ImageMetadata> {
-    return await this.#fetcher.update(imageId, options);
+    return this.#fetcher.update(imageId, options);
   }
 
   async delete(imageId: string): Promise<boolean> {
-    return await this.#fetcher.delete(imageId);
+    return this.#fetcher.delete(imageId);
   }
 
   async list(options?: ImageListOptions): Promise<ImageList> {
-    return await this.#fetcher.list(options || {});
+    return this.#fetcher.list(options || {});
   }
 }
 

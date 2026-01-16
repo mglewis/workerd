@@ -112,6 +112,7 @@ interface ImageUploadOptions {
   filename?: string;
   requireSignedURLs?: boolean;
   metadata?: Record<string, unknown>;
+  creator?: string;
   /**
    * If 'base64', the input data will be decoded from base64 before processing
    */
@@ -121,6 +122,7 @@ interface ImageUploadOptions {
 interface ImageUpdateOptions {
   requireSignedURLs?: boolean;
   metadata?: Record<string, unknown>;
+  creator?: string;
 }
 
 interface ImageListOptions {
